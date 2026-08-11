@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants Nearby Cherry Valley Lodge - Ohio State Convention</title>
+    <style>
+        :root {
+            --primary-navy: #1a365d;
+            --accent-red: #c53030;
+            --light-blue: #ebf8ff;
+            --border-color: #e2e8f0;
+            --text-dark: #2d3748;
+            --text-muted: #718096;
+            --card-bg: #ffffff;
+            --bg-main: #f7fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header-banner {
+            background-color: var(--primary-navy);
+            color: #ffffff;
+            padding: 30px 25px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-red);
+        }
+
+        .header-banner h1 {
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        .header-banner p {
+            font-size: 15px;
+            color: #e2e8f0;
+            font-weight: 300;
+        }
+
+        .controls-section {
+            padding: 20px 25px 10px 25px;
+            background-color: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 15px;
+        }
+
+        .search-bar:focus {
+            border-color: #3182ce;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .filter-btn {
+            background-color: #edf2f7;
+            color: var(--text-dark);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-navy);
+            color: #ffffff;
+        }
+
+        .content-area {
+            padding: 25px;
+        }
+
+        .category-group {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-navy);
+            border-left: 4px solid var(--accent-red);
+            padding-left: 10px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 15px;
+        }
+
+        @media (max-width: 500px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .restaurant-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .restaurant-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .distance-badge {
+            background-color: #edf2f7;
+            color: #2d3748;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        .address-line {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .address-line a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+
+        .address-line a:hover {
+            text-decoration: underline;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 12px;
+            flex-grow: 1;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            background-color: #f7fafc;
+            border: 1px solid #cbd5e0;
+            color: #4a5568;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 16px;
+            display: none;
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-banner">
+        <h1>Restaurants Nearby</h1>
+        <p>Ohio State Convention • Cherry Valley Hotel & Lodge Dining Guide</p>
+    </div>
+
+    <div class="controls-section">
+        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Search restaurants, food types (e.g. burgers, pizza, breakfast)...">
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterCategory('all')">All Options</button>
+            <button class="filter-btn" onclick="filterCategory('onsite')">On-Site</button>
+            <button class="filter-btn" onclick="filterCategory('casual')">Casual Dining</button>
+            <button class="filter-btn" onclick="filterCategory('quick')">Quick-Bites</button>
+            <button class="filter-btn" onclick="filterCategory('newark')">Downtown Newark</button>
+            <button class="filter-btn" onclick="filterCategory('granville')">Granville</button>
+        </div>
+    </div>
+
+    <div class="content-area">
+
+        <!-- CATEGORY 1 -->
+        <div class="category-group" data-cat="onsite">
+            <div class="category-title">1. On-Site Dining (At Cherry Valley Lodge)</div>
+            <div class="cards-grid">
+                
+                <div class="restaurant-card" data-search="craftsman kitchen terrace american fare breakfast lunch dinner garden">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Craftsman Kitchen & Terrace</span>
+                            <span class="distance-badge">On-Site</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=2294+Cherry+Valley+Rd+SE,+Newark,+OH" target="_blank">2294 Cherry Valley Rd SE, Newark, OH</a>
+                        </div>
+                        <div class="description">Casual dining featuring American classics with courtyard and botanical garden views. Great for breakfast, lunch, or dinner.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Breakfast/Lunch/Dinner</span>
+                        <span class="tag">American Fare</span>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" data-search="the ck grill lounge sandwiches burgers bites late evening">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">The CK Grill & Lounge</span>
+                            <span class="distance-badge">On-Site</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=2294+Cherry+Valley+Rd+SE,+Newark,+OH" target="_blank">2294 Cherry Valley Rd SE, Newark, OH</a>
+                        </div>
+                        <div class="description">Lively hotel spot serving signature sandwiches, burgers, and gourmet light bites. Ideal for evening networking.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Casual Dining</span>
+                        <span class="tag">Burgers & Bites</span>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" data-search="granville pantry coffee espresso pastries snacks grab go">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Granville Pantry</span>
+                            <span class="distance-badge">On-Site</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=2294+Cherry+Valley+Rd+SE,+Newark,+OH" target="_blank">2294 Cherry Valley Rd SE, Newark, OH</a>
+                        </div>
+                        <div class="description">Quick-service lobby lounge offering fresh espresso drinks, specialty coffees, pastries, and grab-and-go snacks.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Coffee & Espresso</span>
+                        <span class="tag">Pastries & Snacks</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CATEGORY 2 -->
+        <div class="category-group" data-cat="casual">
+            <div class="category-title">2. Casual Dining & American Grills (5–10 Mins Away)</div>
+            <div class="cards-grid">
+
+                <div class="restaurant-card" data-search="snapshots coffee kitchen elevated comfort food gourmet sandwiches salads local gem">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Snapshots Coffee & Kitchen</span>
+                            <span class="distance-badge">2 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=1843+Cherry+Valley+Rd,+Newark,+OH" target="_blank">1843 Cherry Valley Rd, Newark, OH</a>
+                        </div>
+                        <div class="description">Local favorite right down the street. Elevated comfort food, gourmet sandwiches, fresh salads, and specialty coffees.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Elevated Comfort Food</span>
+                        <span class="tag">Local Gem</span>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" data-search="red oak restaurant burgers wings wraps american fare casual">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Red Oak Restaurant</span>
+                            <span class="distance-badge">4 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=250+Goosepond+Rd,+Newark,+OH" target="_blank">250 Goosepond Rd, Newark, OH</a>
+                        </div>
+                        <div class="description">Relaxed neighborhood restaurant serving burgers, smoked wings, wraps, and classic American fare.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Burgers & Wings</span>
+                        <span class="tag">Casual Dining</span>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" data-search="texas roadhouse steakhouse ribs rolls sides group friendly">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Texas Roadhouse</span>
+                            <span class="distance-badge">6 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=1200+W+Church+St,+Newark,+OH" target="_blank">1200 W Church St, Newark, OH</a>
+                        </div>
+                        <div class="description">Lively steakhouse chain famous for hand-cut steaks, fall-off-the-bone ribs, baked rolls, and hearty sides.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Steakhouse</span>
+                        <span class="tag">Group Friendly</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CATEGORY 3 -->
+        <div class="category-group" data-cat="quick">
+            <div class="category-title">3. Quick-Bites & Family Favorites</div>
+            <div class="cards-grid">
+
+                <div class="restaurant-card" data-search="bob evans all day breakfast homestyle american family dinner walking distance">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Bob Evans</span>
+                            <span class="distance-badge">Adjacent to Hotel</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=1001+Cherry+Valley+Rd+SE,+Newark,+OH" target="_blank">1001 Cherry Valley Rd SE, Newark, OH</a>
+                        </div>
+                        <div class="description">Located next door to the hotel. Reliable homestyle American breakfasts served all day, lunches, and family dinner favorites.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">All-Day Breakfast</span>
+                        <span class="tag">Walking Distance</span>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" data-search="culvers butterburgers cheese curds frozen custard quick service">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Culver’s</span>
+                            <span class="distance-badge">5 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=833+S+30th+St,+Heath,+OH" target="_blank">833 S 30th St, Heath, OH</a>
+                        </div>
+                        <div class="description">Popular quick-service spot known for cooked-to-order ButterBurgers, cheese curds, and fresh frozen custard.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Burgers</span>
+                        <span class="tag">Frozen Custard</span>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" data-search="roosters jumbo wings pizza subs sports family friendly">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Roosters</span>
+                            <span class="distance-badge">8 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=1414+N+21st+St,+Newark,+OH" target="_blank">1414 N 21st St, Newark, OH</a>
+                        </div>
+                        <div class="description">Casual restaurant famous for jumbo wings, specialty pizzas, baked subs, and TV setup for sports viewing.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Wings & Pizza</span>
+                        <span class="tag">Family Friendly</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CATEGORY 4 -->
+        <div class="category-group" data-cat="newark">
+            <div class="category-title">4. Downtown Newark Dining (10 Mins East)</div>
+            <div class="cards-grid">
+
+                <div class="restaurant-card" data-search="elliots wood fired kitchen pizza artisanal small plates entrees">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Elliot’s Wood Fired Kitchen</span>
+                            <span class="distance-badge">10 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=16+W+Main+St,+Newark,+OH" target="_blank">16 W Main St, Newark, OH</a>
+                        </div>
+                        <div class="description">Trendy downtown spot serving artisanal wood-fired pizzas, gourmet small plates, and delicious entrees.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Wood-Fired Pizza</span>
+                        <span class="tag">Artisanal Entrees</span>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" data-search="1922 on the square fine dining steaks seafood pasta upscale bistro">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">1922 on the Square</span>
+                            <span class="distance-badge">10 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=10+N+Park+Pl,+Newark,+OH" target="_blank">10 N Park Pl, Newark, OH</a>
+                        </div>
+                        <div class="description">Upscale bistro on historic square offering fine steaks, fresh seafood, and handcrafted pasta dishes.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Fine Dining</span>
+                        <span class="tag">Steaks & Seafood</span>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" data-search="moes original bbq southern style smoked barbecue pork ribs turkey sides">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">Moe’s Original BBQ</span>
+                            <span class="distance-badge">10 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=21+W+Church+St,+Newark,+OH" target="_blank">21 W Church St, Newark, OH</a>
+                        </div>
+                        <div class="description">Southern-style smoked barbecue pork, ribs, turkey, and traditional scratch-made sides in a relaxed setting.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Smoked BBQ</span>
+                        <span class="tag">Southern Sides</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CATEGORY 5 -->
+        <div class="category-group" data-cat="granville">
+            <div class="category-title">5. Historic Village of Granville Dining (8 Mins West)</div>
+            <div class="cards-grid">
+
+                <div class="restaurant-card" data-search="buxton inn dining room historic traditional american entrees cozy">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">The Buxton Inn Dining Room</span>
+                            <span class="distance-badge">8 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=313+E+Broadway,+Granville,+OH" target="_blank">313 E Broadway, Granville, OH</a>
+                        </div>
+                        <div class="description">Historic 1812 inn offering traditional American entrees and cozy dining amidst historic architecture.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Historic Setting</span>
+                        <span class="tag">Classic American</span>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" data-search="eatery on broadway village burgers fish chips sandwiches casual">
+                    <div>
+                        <div class="card-top">
+                            <span class="restaurant-name">The Eatery on Broadway</span>
+                            <span class="distance-badge">8 Mins Away</span>
+                        </div>
+                        <div class="address-line">
+                            📍 <a href="https://maps.google.com/?q=126+E+Broadway,+Granville,+OH" target="_blank">126 E Broadway, Granville, OH</a>
+                        </div>
+                        <div class="description">Welcoming village gathering spot featuring specialty burgers, fish & chips, sandwiches, and casual meals.</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Village Eatery</span>
+                        <span class="tag">American Classics</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="noResults" class="no-results">
+            No matching restaurants found. Try a different search term or category.
+        </div>
+
+    </div>
+
+    <div class="footer-note">
+        Please verify operating hours and reservations directly with restaurants during peak convention hours.
+    </div>
+</div>
+
+<script>
+    let currentCategory = 'all';
+
+    function filterCategory(cat) {
+        currentCategory = cat;
+        
+        // Update active button styling
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        applyFilters();
+    }
+
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+    function applyFilters() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        const groups = document.querySelectorAll('.category-group');
+        let totalVisibleCards = 0;
+
+        groups.forEach(group => {
+            const groupCat = group.getAttribute('data-cat');
+            const matchesCat = (currentCategory === 'all' || currentCategory === groupCat);
+
+            if (!matchesCat) {
+                group.style.display = 'none';
+                return;
+            }
+
+            const cards = group.querySelectorAll('.restaurant-card');
+            let visibleInGroup = 0;
+
+            cards.forEach(card => {
+                const searchData = card.getAttribute('data-search').toLowerCase();
+                const matchesSearch = searchData.includes(searchTerm);
+
+                if (matchesSearch) {
+                    card.style.display = 'flex';
+                    visibleInGroup++;
+                    totalVisibleCards++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (visibleInGroup > 0) {
+                group.style.display = 'block';
+            } else {
+                group.style.display = 'none';
+            }
+        });
+
+        const noResults = document.getElementById('noResults');
+        if (totalVisibleCards === 0) {
+            noResults.style.display = 'block';
+        } else {
+            noResults.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
